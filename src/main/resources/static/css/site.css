@@ -1,0 +1,78 @@
+body{
+    padding-top: 5px;
+    padding-bottom: 20px;
+}
+
+footer{
+    height: 20px;
+}
+.key {
+    margin-bottom: 0;
+    font-weight: bold;
+    /* display: block; */
+}
+
+.value {    
+    margin-left: 5px;
+}
+/* DivTable.com */
+.divTable{
+	display: table;
+	width: 100%;
+}
+.divTableRow {
+	display: table-row;
+}
+.divTableHeading {
+	background-color: #EEE;
+	display: table-header-group;
+}
+.divTableHead {
+	border: 1px solid #999999;
+	display: table-cell;
+	padding: 3px 10px;
+	font-size: 10px;
+	font-weight:bold;
+}
+.divTableCell {
+	border: 1px solid #999999;
+	display: table-cell;
+	padding: 3px 10px;
+	font-size: 10px;
+}
+.divTableHeading {
+	background-color: #EEE;
+	display: table-header-group;
+	font-weight: bold;
+}
+.divTableFoot {
+	background-color: #EEE;
+	display: table-footer-group;
+	font-weight: bold;
+}
+.divTableBody {
+	display: table-row-group;
+}
+
+.phone-number .col-xs-3::after{
+ content: "-";
+ position:absolute;
+    right: 5px;
+    color: black;
+    border: 0px solid;
+    top: 5px;
+}
+
+.phone-number .col-xs-4{
+	width:25%;
+}
+
+.phone-number .col-xs-3, .phone-number .col-xs-4{
+
+	padding-left:0;
+}
+
+.col-md-2.custom-col-md-2 {
+      width:5%;
+      
+    }
