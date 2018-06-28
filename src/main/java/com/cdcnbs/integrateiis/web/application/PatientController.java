@@ -53,11 +53,28 @@ public class PatientController {
 		return "patient";
 	}
 	
+	@RequestMapping(value="/patientdetail/{id}",method = RequestMethod.GET)
+	public String getPatientDetail(@PathVariable(name="id") Long patientID, Model model)  {
+		
+		Optional<Patient> patient = this.patientRepository.findById(patientID);
+		
+		model.addAttribute("patient", patient.get());
+		
+		return "patientdetail";
+	}
+	
 	@RequestMapping(value="/search",method = RequestMethod.GET)
 	public String getSearch(Model model)  {
 		
 		
 		return "search";
+	}
+	
+	@RequestMapping(value="/searchdetail",method = RequestMethod.GET)
+	public String getSearchDetail(Model model)  {
+		
+		
+		return "searchdetail";
 	}
 	
 	

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>Patients</title>
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    
+    <link rel="stylesheet" th:href="@{/css/site.css}"/> 
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+<div class="container">
+	<div class="page-header">
+        <h2>NBS Patient Search Detail</h2>
+    </div>
+    <div><a th:href="@{'/patient/search/'}">Search</a></div>
+    <div class="row">
+    
+    	<div class="col-md-6">
+    	<div class="row">
+    	<label class="col-md-2 custom-col-md-2">ID</label>
+    	
+	    	<div class="col-md-10">
+	    		<div class="form-group form-inline">
+	    		
+		    		<input class="form-control" placeholder="Patient Identifier" id="PatientIdentifier" name="PatientIdentifier" type="text">
+					<input class="form-control" placeholder="Authority" id="Authority" name="Authority" type="text">
+					<select class="form-control" id="PatientIdentifierType" name="PatientIdentifierType">                		
+						<option value="MR">Medical Record Number</option>
+						<option value="PT">Patient External Identifier</option>
+						<option value="SR">State Registry ID</option>
+					</select>
+	    		</div>
+	    	</div>
+    	</div>
+        
+    
+	    <div class="row">
+	    	<label class="col-md-2 custom-col-md-2">Patient</label>
+	    	
+	    	<div class="col-md-10">
+	    		<div class="form-group form-inline">
+	    		
+		    		<input class="form-control" placeholder="First Name" id="FirstName" name="FirstName" type="text">
+					<input class="form-control" placeholder="Middle Name" id="MiddleName" name="MiddleName" type="text">
+					<input class="form-control" placeholder="Last Name" id="LastName" name="LastName" type="text">
+					<select class="form-control" id="Sex" name="Sex">                		
+							<option value="M">Male</option>
+							<option value="F">Female</option>
+							<option value="U">Unknown</option>
+						</select>    		
+	    		</div>    	
+	    	</div>    
+	    </div>
+    
+	    <div class="row">
+	    	<label class="col-md-2 custom-col-md-2">Mother</label>    	
+	    	<div class="col-md-10">
+	    		<div class="form-group form-inline">    		
+		    		<input class="form-control" placeholder="First Name" id="MotherFirstName" name="FirstName" type="text">
+					<input class="form-control" placeholder="Middle Name" id="MotherMiddleName" name="MiddleName" type="text">
+					<input class="form-control" placeholder="Last Name" id="MotherLastName" name="LastName" type="text">
+	    			<input class="form-control" placeholder="Maiden Name" id="MaidenName" name="LastName" type="text">
+	    		</div>    	
+	    	</div>    
+	    </div>
+	    
+	    <div class="row">
+	    	<label class="col-md-2 custom-col-md-2">Birth</label>    	
+	    	<div class="col-md-10">
+	    		<div class="form-group form-inline">    		
+		    		<input class="form-control" placeholder="DOB" id="DOB" name="DOB" type="datetime" value="">
+				    <input type="checkbox" id="MultipleBirthIndicator" value="true">Multiple Indicator    
+					<input class="form-control" placeholder="Order" id="multipleBirthOrder" name="multipleBirthOrder" size="5">				
+	    		</div>    	
+	    	</div>    
+	    </div>
+    
+	    <div class="row">
+	    	<label class="col-md-2 custom-col-md-2">Address</label>    	
+	    	<div class="col-md-10">
+	    		<div class="form-group form-inline">    		
+		    		<input class="form-control" placeholder="Address Line 1" id="AddressLine1" name="AddressLine1" type="text" style="display:block;width:41%;">
+					<input class="form-control" placeholder="Address Line 2" id="AddressLine2" name="AddressLine2" type="text" style="display:block;width:41%;">
+					<input class="form-control" placeholder="City" id="City" name="City" type="text">
+	    			<input class="form-control" placeholder="ST" id="State" name="State" type="text" size="2">
+	    			<input class="form-control zipmask" placeholder="Zip" id="ZipCode" name="ZipCode" type="text" size="10">
+	    			<input class="form-control" placeholder="USA" id="Country" name="Country" type="text" size="3">
+	    		</div>    	
+	    	</div>    
+	    </div>
+	    <div class="row">
+	    	<label class="col-md-2 custom-col-md-2">Phone</label>    	
+	    	<div class="col-md-10">
+	    		<div class="form-group form-inline">    		
+		    		<input class="form-control text-box single-line phoneMask" placeholder="Phone" id="PhoneNumber" name="PhoneNumber" type="text">        			
+	    		</div>    	
+	    	</div>    
+	    </div>
+    
+    
+    
+       <a href="#" id="queryIIS" class="btn btn-primary">Search Immunization Records</a>
+    	
+    	</div>
+    
+    	<div class="col-md-6">
+    		<label style="display:block;padding-top:5px;">Patient JSON</label>
+    		<code id="patient"></code>
+    		
+    		<label style="display:block;padding-top:5px;">Request HL7</label>
+    		<code id="requestHL7"></code>
+    		
+    		<label style="display:block;padding-top:5px;">Response HL7</label>
+    		<code id="responseHL7"></code>
+    	
+    		<label style="display:block;padding-top:5px;">Query Response JSON</label>
+    		<code id="queryResponse"></code>
+    		
+    		<label style="display:block;padding-top:5px;">HTLM Query Response</label>
+    		<div id="iisResults"></div>
+    	</div>
+    </div>
+    
+    
+    
+    
+    
+       
+
+    
+</div>
+
+	
+
+<footer class="footer navbar-inverse navbar-fixed-bottom">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4"><p class="text-muted">@Copyright 2018 Mark Ellingson</p></div>
+        </div>
+    </div>
+</footer>
+
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+<script type="text/javascript">
+	
+	
+	
+	
+	$( function() {
+		$('#DOB').datepicker({		
+			changeMonth: true,
+			changeYear: true   
+	    });
+		
+		var _patientData;
+		var _vaccinations;
+		var _patients;
+		
+		$('.phoneMask').mask("(999) 999-9999");
+		$('.zipmask').mask("99999?-9999");
+		
+		// Javascript patient object
+		//pre-fill form fields for testing. 
+ 		$("#FirstName").val("Sam");
+ 		$("#LastName").val("Watkins");
+// 		$("#PatientIdentifier").val("042320181448");
+// 		$("#MotherFirstName").val("Gale");
+// 		$("#MotherLastName").val("Orwell");
+ 		$("#MaidenName").val("Smith");
+// 		$("#AddressLine1").val("566 Camden St");
+ 		$("#DOB").val("01/05/2010");
+// 		$("#City").val("Omaha");
+// 		$("#State").val("NE");
+// 		$("#ZipCode").val("68007");
+// 		$("#Country").val("USA");
+// 		$("#PhoneNumber").val("5557865523");
+		
+		$('#queryIIS').on('click', function(){
+			
+			var areaCode, phoneNumber
+			phoneNumber = $("#PhoneNumber").val();
+			if(phoneNumber != null || phoneNumber.length > 0){
+				if(phoneNumber.length == 10){
+					areaCode = phoneNumber.substring(0,3); //first three characters
+					phoneNumber = phoneNumber.substring(3,phoneNumber.length);  //last seven
+				}
+			}
+			var dob = $("#DOB").val(); 
+			if( dob != null || dob.length > 0){
+				dob = new Date(dob);
+			}
+			
+			var patient = {
+					patientIdentifier: $("#PatientIdentifier").val(),
+					authority: $("#Authority").val(),
+					patientIdentifierType: $("#PatientIdentifierType").val(),
+					firstName: $("#FirstName").val(),
+					lastName: $("#LastName").val(),
+					motherFirstName: $("#MotherFirstName").val(),
+					motherLastName: $("#MotherLastName").val(),
+					maidenName: $("#MaidenName").val(),
+					dob: dob,
+					sex: $("#Sex").val(),
+					addressLine1: $("#AddressLine1").val(),
+					city: $("#City").val(),
+					state: $("#State").val(),
+					zipCode: $("#ZipCode").val(),
+					country: $("#Country").val(),
+					areaCode: areaCode,
+					phoneNumber: phoneNumber
+			}
+			
+			// Send patient and get patient data back.
+			getPatientData(patient);
+			
+			// Create results
+			//showPatientData(_patientData);
+			
+		});
+		
+		$('#iisResults').on('click', 'a.patientSearch', function(){		
+			
+			var index = $(this).data('id');
+			var vpat = _patientData.queryResponse.patientList[index];
+			if (vpat != null){
+				var patient = {
+						patientIdentifier: vpat.idNumber,						
+						patientIdentifierType: vpat.idType,
+						firstName: vpat.nameFirst,
+						lastName: vpat.nameLast,
+						maidenName: vpat.motherNameMaiden,
+						dob: vpat.birthDate
+				}	
+				
+				getPatientData(patient);
+			}
+			else{
+				$("#iisResults").html("Patient could not be retrieved.");
+			}
+			
+			
+		});
+		
+		function getPatientData(patient){
+			var patientData = {
+				patients: null,
+				vaccinations: null
+			};
+			$.ajax({
+				  type: "POST",
+				  url: "[[@{/api/search}]]",
+				  data: JSON.stringify(patient),				  
+				  dataType: 'json',
+				  headers: { 
+				        'Accept': 'application/json',
+				        'Content-Type': 'application/json' 
+				  },
+				  success: function(data){
+					  _patientData = data;
+				  }
+				}).done(function(data){					
+					showData(_patientData);
+			    });;			
+		}
+		
+		function showData(patientData){
+			
+			var sb = new Array(); 
+			$("#patient").html(JSON.stringify(patientData.patient));
+			$("#requestHL7").html(patientData.requestHL7);
+			$("#responseHL7").html(patientData.responseHL7);
+			$("#queryResponse").html(JSON.stringify(patientData.queryResponse));
+			
+			if(patientData.queryResponse.patientList.length == 0){					
+				sb.push("<div>No patient vaccinations found!</div>")
+			}
+			else if(patientData.queryResponse.patientList.length > 1){
+				
+				sb.push("<div>Multiple patients found.</div>")
+				sb.push("<div class=\"divTable\" style=\"border: 1px solid #000;\">");
+				sb.push("<div class=\"divTableBody\">");
+				// Make header row.
+				sb.push("<div class=\"divTableRow\">");
+				sb.push("<div class=\"divTableHead\">Patient Name</div>");
+				sb.push("<div class=\"divTableHead\">Data of Birth</div>");
+				sb.push("<div class=\"divTableHead\">Maiden Name</div>");										
+				sb.push("</div>");
+				
+				
+				for(var i = 0; i < patientData.queryResponse.patientList.length; i++){
+					
+					
+					
+					sb.push("<div class=\"divTableRow\">");
+													
+					sb.push("<div class=\"divTableCell\"><a href=\"#\" data-id=\"" + i +"\" class=\"patientSearch\">" + $.trim(patientData.queryResponse.patientList[i].nameFirst) + " " + $.trim(patientData.queryResponse.patientList[i].nameLast) + "</a></div>");
+					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.queryResponse.patientList[i].birthDate).split("T")[0] + "</div>");
+					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.queryResponse.patientList[i].motherNameMaiden) + "</div>");
+												
+					sb.push("</div>");
+				}
+				
+				// Button to submit vaccinations to RESTFul vaccination service.
+				// Checkbox to include vaccination with patient.
+				sb.push("</div>");
+				sb.push("</div>");						
+				
+				
+				
+			}
+			else{
+				sb.push("<div style=\"font-weight:bold;\">Immunization Records Found for " + $.trim(patientData.queryResponse.patientList[0].nameFirst) + " " + $.trim(patientData.queryResponse.patientList[0].nameLast) + " DOB: " + $.trim(patientData.queryResponse.patientList[0].birthDate).split("T")[0] + " Maiden Name: "  + $.trim(patientData.queryResponse.patientList[0].motherNameMaiden) + "</div>");
+				sb.push("<div class=\"divTable\" style=\"border: 1px solid #000;\">");
+				sb.push("<div class=\"divTableBody\">");
+				// Make header row.
+				sb.push("<div class=\"divTableRow\">");
+				sb.push("<div class=\"divTableHead\">Admin Date</div>");
+				sb.push("<div class=\"divTableHead\">Vacc Label</div>");
+				sb.push("<div class=\"divTableHead\">Vacc Cvx</div>");
+				sb.push("<div class=\"divTableHead\">Manu Label</div>");
+				sb.push("<div class=\"divTableHead\">Manu Cvx</div>");
+				sb.push("<div class=\"divTableHead\">Lot #</div>");
+				sb.push("<div class=\"divTableHead\">Comp Status</div>");
+				sb.push("<div class=\"divTableHead\">Info Src</div>");
+				sb.push("<div class=\"divTableHead\">Info Src Label</div>");
+				sb.push("<div class=\"divTableHead\">Refusal Reason</div>");
+				sb.push("<div class=\"divTableHead\">Admin Amt</div>");
+				sb.push("<div class=\"divTableHead\">Admin Amt Unit</div>");					
+				sb.push("</div>");
+				
+				
+				for(var i = 0; i < patientData.queryResponse.vaccinationList.length; i++){
+					
+					
+					var vaccDate = patientData.queryResponse.vaccinationList[i].administrationDate.split('T');
+					sb.push("<div class=\"divTableRow\">");					
+					sb.push("<div class=\"divTableCell\">" + $.trim(vaccDate[0]) + "</div>");
+					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.queryResponse.vaccinationList[i].vaccineLabel) + "</div>");
+					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.queryResponse.vaccinationList[i].vaccineCvx) + "</div>");
+					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.queryResponse.vaccinationList[i].manufacturerLabel) + "</div>");
+					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.queryResponse.vaccinationList[i].manufacturerCvx) + "</div>");
+					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.queryResponse.vaccinationList[i].lotNumber) + "</div>");
+					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.queryResponse.vaccinationList[i].completionStatus) + "</div>");
+					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.queryResponse.vaccinationList[i].informationSource) + "</div>");
+					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.queryResponse.vaccinationList[i].informationSourceLabel) + "</div>");
+					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.queryResponse.vaccinationList[i].refusalReason) + "</div>");
+					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.queryResponse.vaccinationList[i].administeredAmount) + "</div>");
+					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.queryResponse.vaccinationList[i].administeredAmountUnit) + "</div>");								
+					sb.push("</div>");
+				}
+				
+				// Button to submit vaccinations to RESTFul vaccination service.
+				// Checkbox to include vaccination with patient.
+				sb.push("</div>");
+				sb.push("</div>");						
+								
+				
+				
+			}
+							
+			$( "#iisResults" ).html(sb.join(""));
+		}
+		
+	} );
+
+</script>
+</body>
+</html>

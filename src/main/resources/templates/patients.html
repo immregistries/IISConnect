@@ -42,7 +42,7 @@
         </tr>
         <tr th:each="patient: ${patients}">
         	
-			<td><a th:href="@{'/patient/detail/' + ${patient.id}}"><span th:text="${patient.PatientIdentifier}"></span></a></td>
+			<td><a th:href="@{'/patient/detail/' + ${patient.id}}"><span th:text="${patient.PatientIdentifier}"></span></a> | <a th:href="@{'/patient/patientdetail/' + ${patient.id}}">Detail</a></td>
             
             <td th:text="${patient.PatientIdentifierType}">Type</td>
             <td th:text="${patient.LastName}">Patient Last Name</td>
