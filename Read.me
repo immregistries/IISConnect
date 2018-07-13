@@ -1,0 +1,152 @@
+Integrate IIS 
+----------------------------------------------
+The Integrate IIS project creates a RESTFul interface to individual state 
+Immunization Information Services (IIS) SOAP based Web Services. Integrate IIS is built on the Spring Boot Java based MVC
+web development platform.
+
+Integrate IIS generates a JSON respresentation of data returned from the American Immunization
+Registry Association's (AIRA) Simple Message Mover application (SMM-Tester: https://github.com/nathanbunker/smm-tester)
+
+The intent of the Integerate IIS application is to provide interoperability between State IIS registries and applications that
+could benefit from the IIS data. Relevant applications may be CDC NEDSS Based Systems or a School System that wishes to retrieve immunization
+data for a student.
+
+Getting Started
+----------------------------------------------
+Pull the Integrate IIS source code from the following GitHub repository:
+
+	https://github.com/immregistries/IISConnect
+
+Open the project in Eclipse or another Java IDE. Navigate to the src/main/resources folder and open the 
+application.properties file and edit the following properties:
+
+-- H2 data properties for sample data. 
+These properties can use the default value or you can adjust
+to suit your data testing requirements.
+
+	spring.jpa.hibernate.ddl-auto=none
+	spring.h2.console.enabled=true
+	spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+-- Spring boot logging
+Indicate when information should be logged. The default is
+for Error level logging.
+	
+	logging.level.org.springframework.web=ERROR
+	logging.level.com.cdcnbs.integrateiis=ERROR
+	logging.level.org.hibernate=ERROR
+	
+-- Log file location. 
+Specify the path and file name of the log file.  
+	logging.file = path/file name
+
+-- IIS Service Config file.
+The IIS config file is required to establish a connection to a
+State's IIS system. Many state config files are uniform, but
+some states have unique requirements. The IIS config file must be stored
+in a folder that the IIS Connect application has read access to.
+iisservice.Config = path/iis config file name.
+
+-- Build the project using Maven
+Maven is a prequisite for installing and running IIS Conect.
+From the command propmt or Terminal, run the following Maven command from the root folder
+where the IIS Connect application resides:
+mvn install
+
+-- Run the application using Eclipse
+From Eclipse, press F5 or click the Run button. If the project successfully built, the Console should indicate that the
+application is running on localhost on port 8080.
+
+Open a browser and navigate to http://localhost:8080/patient/list. This page should list sample patient records. If you select 
+a patient, you will navigate to the http://localhost:8080/patient/detail/[Patient ID] page. This page allows you to search the configured IIS using all of the patient data that displays. To change the test data, edit the data.sql file found under src/main/resources.
+
+Navigate to http://localhost:8080/patient/search, enter some search criteria that should find one or more records from the
+configured State IIS Registry.
+
+Prerequisites
+----------------------------------------------
+-- Maven
+Maven must be installed to build and deploy the IIS Connect application.
+
+-- SMM-Tester
+The Integrate IIS application requires the SMM-Tester application. If the SMM-Tester.jar is not available on your
+local PC, you must download the smm-tester source code found at https://github.com/nathanbunker/smm-tester. 
+
+Download the source code locally and attempt to build the application using:
+	mvn install
+
+If you receive errors conerning tests that failed, attempt to build the SMM-Tester using:
+	mvn install -Dmaven.test.skip=true
+
+The following dependency in the Integrate IIS pom.xml should allow the SMM-Tester.jar file to work properly with the Integrate IIS 
+application:
+
+		<dependency>
+			<groupId>org.immregistries</groupId>
+			<artifactId>smm-tester</artifactId>	
+			<exclusions>
+		      <exclusion> 
+		        <groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>				
+		      </exclusion>
+		      <exclusion> 
+		        <groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>				
+		      </exclusion>
+		    </exclusions> 
+		</dependency>
+
+Deploying
+----------------------------------------------
+The Integrate IIS application is built on the 
+Spring Boot platform, and is configured to deploy as a 
+war file to run under as web server such as tomcat. 
+
+The following instructions apply to deploying the Integrate IIS
+application to an apache tomcat server.
+
+1 - From the command prompt or terminal, naviagate to the root folder where Integrate IIS in loaded
+2 - Run the following maven command: mvn clean package
+3 - Navigate to the target folder under the root Integrate IIS folder and verify that the integrateiis.war file exists.
+4 - Copy the integrateiis.war file to the webapps folder of your tomcat installation.
+5 - From the tomcat webapps folder, navigate to the integrateiis/WEB-INFO/classes folder
+6 - Edit the application.properties file to include the path to the log file, and the path to the State IIS connection file.
+7 - Navigate to the url of the deployed application and test functionality.
+
+Using the API
+----------------------------------------------
+To query the configured IIS from a web client, you will use the /api/search method from the root of your installed Integrate IIS website. You can use the API from Javascript within a browser or server side. In either case, you will post a Patient class with
+at least the minimum fields filled:
+	- First Name
+	- Last Name
+	- Date of Birth
+	- Mother's maiden name
+
+A browser based client within Integrate IIS or from another web application can post a JSON Patient class to the /api/search method. 
+The /api/search method will return a VaccinationData object that includes:
+
+ - JSON Representation of Patient data submitted
+ - JSON Representation of SMM-Tester Array of QueryResponse objects
+ - String of HL7 request
+ - String of HL7 response
+ 
+
+
+Built With
+----------------------------------------------
+Spring Boot - Java based MVC web development framework
+Maven - Dependency Management
+SMM-Tester - American Immunization Registry Association's application to interface with State IIS registries. 
+
+
+Authors
+Mark Ellingson - Emory University
+
+Acknowledgments
+----------------------------------------------
+Many thanks to Marion Anandappa of the CDC for supplying invaluable technical guidance and who orchestrated the 
+connection to test state immunization registries used to test the application code.  
+
+This project would be nowhere near possible without the technical assistance and source code written
+by Nathan Bunker with the American Immunization Registry Association. 
+
