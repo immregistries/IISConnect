@@ -158,14 +158,14 @@
 		
 		// Javascript patient object
 		//pre-fill form fields for testing. 
- 		$("#FirstName").val("Sam");
- 		$("#LastName").val("Watkins");
+ 		$("#FirstName").val("Kyle");
+ 		$("#LastName").val("Jones");
 // 		$("#PatientIdentifier").val("042320181448");
 // 		$("#MotherFirstName").val("Gale");
 // 		$("#MotherLastName").val("Orwell");
- 		$("#MaidenName").val("Smith");
+// 		$("#MaidenName").val("Smith");
 // 		$("#AddressLine1").val("566 Camden St");
- 		$("#DOB").val("01/05/2010");
+ 		$("#DOB").val("04/15/2008");
 // 		$("#City").val("Omaha");
 // 		$("#State").val("NE");
 // 		$("#ZipCode").val("68007");
@@ -193,12 +193,14 @@
 					patientIdentifierType: $("#PatientIdentifierType").val(),
 					firstName: $("#FirstName").val(),
 					lastName: $("#LastName").val(),
+					middleName: $("#MiddleName").val(),
 					motherFirstName: $("#MotherFirstName").val(),
 					motherLastName: $("#MotherLastName").val(),
 					maidenName: $("#MaidenName").val(),
 					dob: dob,
 					sex: $("#Sex").val(),
 					addressLine1: $("#AddressLine1").val(),
+					addressLine2: $("#AddressLine2").val(),
 					city: $("#City").val(),
 					state: $("#State").val(),
 					zipCode: $("#ZipCode").val(),

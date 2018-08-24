@@ -141,6 +141,7 @@ $('#queryIIS').on('click', function(){
 					dob: dob,
 					sex: '[[${patient.Sex}]]',
 					addressLine1: '[[${patient.AddressLine1}]]',
+					addressLine2: '[[${patient.AddressLine2}]]',
 					city: '[[${patient.City}]]',
 					state: '[[${patient.State}]]',
 					zipCode: '[[${patient.ZipCode}]]',
@@ -149,6 +150,13 @@ $('#queryIIS').on('click', function(){
 					phoneNumber: '[[${patient.PhoneNumber}]]'
 			}
 			
+			//Replace null with empty space
+			for(var key in patient){
+				
+				if (patient[key] == null){
+					patient[key] = "";
+				} 
+			}
 			
 			$.ajax({
 				  type: "POST",

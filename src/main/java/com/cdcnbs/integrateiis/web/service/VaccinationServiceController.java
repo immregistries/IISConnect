@@ -1,4 +1,4 @@
-package com.cdcnbs.integrateiis.web.service;
+	package com.cdcnbs.integrateiis.web.service;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -44,6 +44,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cdcnbs.IISCore.Data.IISData;
+import com.cdcnbs.IISCore.Data.Person;
+import com.cdcnbs.IISCore.Service.IISService;
 import com.cdcnbs.integrateiis.business.domain.VaccinationData;
 import com.cdcnbs.integrateiis.data.entity.Patient;
 import com.cdcnbs.integrateiis.data.entity.Vaccination;
@@ -80,157 +83,69 @@ public class VaccinationServiceController {
 	
 	
 	@RequestMapping(method=RequestMethod.GET,value="vaccinations/{id}")
-	public VaccinationData getVaccinationsByID(@PathVariable(value="id") Long patientID){
+	public IISData getVaccinationsByID(@PathVariable(value="id") Long patientID){
 		
-		VaccinationData ret = new VaccinationData();
-		String responseMessage = "";
+		// Use the IISCore project to communicate with the State IIS
 		Optional<Patient> p = patientRepository.findById(patientID);
 		Patient patient = p.get();
 		
+		// Use constructor to load connection information.
+		Person person = new Person(readIISConnection());
+		
+		person.setAddressLine1(patient.getAddressLine1());
+		person.setAddressLine2(patient.getAddressLine2());
+		person.setAreaCode(patient.getAreaCode());
+		person.setAuthority(patient.getAuthority());
+		person.setCity(patient.getCity());
+		person.setCountry(patient.getCountry());
+		person.setDOB(patient.getDOB());
+		person.setFirstName(patient.getFirstName());
+		person.setLastName(patient.getLastName());
+		person.setMaidenName(patient.getMaidenName());
+		person.setMotherFirstName(patient.getMotherFirstName());
+		person.setMotherLastName(patient.getMotherLastName());
+		person.setPhoneNumber(patient.getPhoneNumber());
+		person.setPatientIdentifier(patient.getPatientIdentifier());
+		person.setPatientIdentifierType(patient.getPatientIdentifierType());
+		
 		// Include patient
-		ret.setPatient(patient);
-
-		// Map patient record to query request object;
-		QueryRequest queryRequest = Messaging.getQueryRequestFromPatient(patient);
-		
-		TestCaseMessage testCaseMessage = Messaging.createTestCaseMessage(queryRequest);
-
-        // Request query type to get vaccine records.
-		QueryConverter queryConverter = new QueryConverterQBPZ34();
-              
-        // Get HL7 representation of patient data.  
-        TestCaseMessage queryTestCaseMessage = new TestCaseMessage();
-        queryTestCaseMessage.setMessageText(queryConverter.convert(testCaseMessage.getMessageText()));
-    
-        // Clean the text
-        String message = Messaging.cleanMessage(queryTestCaseMessage.getMessageText());
-           
-        
 		try {
-			 
-			Boolean debug = true;
-			
-			// Create connector from Web Service configuration information stored in application.properties.
-			Connector connector = Connector.makeConnectors(readIISConnection()).get(0);
-			
-			// custom transformations required by state IIS obtained from the connector.
-			String transforms = connector.getCustomTransformations();
-			Transformer transformer = new Transformer();
-			
-			message = transformer.transformForSubmitServlet(connector,message, transforms, null, null, null);
-			
-			// Include request message
-			ret.setRequestHL7(message);
-			
-			// Get HL7 response from State IIS
-			responseMessage = connector.submitMessage(message, debug);
-			
-			ret.setResponseHL7(responseMessage);
-			
-			// Get immunization objects
-			ImmunizationMessage immunizationMessage = ResponseReader.readMessage(responseMessage);
-			
-			// Immunization Message includes properties for patient and patientList but they are null.
-			// Discuss how to get these records returned.
-			
-			// get immunizations and map to Vaccination
-			QueryResponse queryResponse = (QueryResponse) immunizationMessage;
-			
-			// Include 
-			ret.setQueryResponse(queryResponse);
-			
-			
-				
+			IISData ret = IISService.queryIIS(person);	
+			System.out.println(ret.getPatient().toString());
+			System.out.println(ret.getRequestHL7());
+			System.out.println(ret.getResponseHL7());
+			System.out.println(ret.getQueryResponse().toString());
 			return ret;
-			
-			
-			
-		} catch (Exception e1) {
-			
-			log.error(e1.getLocalizedMessage());
+		} 
+		catch (Exception e1) {
+			// Log error	
+			log.error(e1.getLocalizedMessage());			
 		}
-	    
-	    // return empty
-		return ret;
 		
-		
-		
+		// return null
+		return null;
 		
 	}
 	
-	@RequestMapping(value = "search", method = RequestMethod.POST)
-	//public List<Vaccination> search(@RequestBody Patient patient) {
-	public VaccinationData search(@RequestBody Patient patient) {
-		String responseMessage = "";
-		VaccinationData ret = new VaccinationData();
+	
+	@RequestMapping(value = "search", method = RequestMethod.POST)	
+	public IISData search(@RequestBody Person person) {
 		
-		QueryResponse queryResponse = new QueryResponse();
-	    if (patient != null) {
-	    	
-	    	// Include the patient in the return object
-	    	ret.setPatient(patient);
-	    	
-	    	// Map patient record to query request object;
-			QueryRequest queryRequest = Messaging.getQueryRequestFromPatient(patient);
-			
-			TestCaseMessage testCaseMessage = Messaging.createTestCaseMessage(queryRequest);
-
-	        // Request query type to get vaccine records.
-			QueryConverter queryConverter = new QueryConverterQBPZ34();
-	              
-	        // Get HL7 representation of patient data.  
-	        TestCaseMessage queryTestCaseMessage = new TestCaseMessage();
-	        queryTestCaseMessage.setMessageText(queryConverter.convert(testCaseMessage.getMessageText()));
-	    
-	        // Clean the text
-	        String message = Messaging.cleanMessage(queryTestCaseMessage.getMessageText());
-	        
-	         
-	        
-			try {
-				 
-				Boolean debug = true;
-				
-				// Create connector from Web Service configuration information stored in application.properties.
-				Connector connector = Connector.makeConnectors(readIISConnection()).get(0);
-				
-				// custom transformations required by state IIS obtained from the connector.
-				String transforms = connector.getCustomTransformations();
-				Transformer transformer = new Transformer();
-				
-				message = transformer.transformForSubmitServlet(connector,message, transforms, null, null, null);
-			
-				// Include message in returned object.
-		        ret.setRequestHL7(message);  
-		        
-				// Get HL7 response from State IIS and include in returned object
-				responseMessage = connector.submitMessage(message, debug);
-				ret.setResponseHL7(responseMessage);
-				
-				
-				// Get immunization objects
-				ImmunizationMessage immunizationMessage = ResponseReader.readMessage(responseMessage);
-				
-				// Immunization Message includes properties for patient and patientList but they are null.
-				// Discuss how to get these records returned.
-				
-				// get immunizations and map to Vaccination
-				queryResponse = (QueryResponse) immunizationMessage;
-				
-				// Include the query response 
-				ret.setQueryResponse(queryResponse);
-				return ret;
-
-				
-			} catch (Exception e1) {
-				// Log error	
-				log.error(e1.getLocalizedMessage());
-			}		    
-	    	
-	    }
-
-	    // return empty
-	    return ret;
+		// Use the IISCore project to communicate with the State IIS
+		
+		// set the connection credentials.
+		person.setIISConfig(readIISConnection());
+		try {
+			IISData ret = IISService.queryIIS(person);		
+			return ret;
+		} 
+		catch (Exception e1) {
+			// Log error	
+			log.error(e1.getLocalizedMessage());			
+		}
+		
+		// return null
+		return null;
 	}
 }
 

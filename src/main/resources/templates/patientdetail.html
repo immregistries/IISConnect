@@ -16,6 +16,14 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style>
+    	code {
+		    display: block-inline; 
+		    max-width: 500px; /* Whatever. The <code>'s width will change */
+		    overflow-wrap: break-word;
+		}
+		
+    </style>
 </head>
 <body>
 
@@ -154,6 +162,7 @@ $('#queryIIS').on('click', function(){
 					dob: dob,
 					sex: '[[${patient.Sex}]]',
 					addressLine1: '[[${patient.AddressLine1}]]',
+					addressLine2: '[[${patient.AddressLine2}]]',
 					city: '[[${patient.City}]]',
 					state: '[[${patient.State}]]',
 					zipCode: '[[${patient.ZipCode}]]',
@@ -162,6 +171,13 @@ $('#queryIIS').on('click', function(){
 					phoneNumber: '[[${patient.PhoneNumber}]]'
 			}
 			
+			//Replace null with empty space
+			for(var key in patient){
+				
+				if (patient[key] == null){
+					patient[key] = "";
+				} 
+			}
 			
 			$.ajax({
 				  type: "POST",
