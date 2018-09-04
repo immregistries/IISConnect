@@ -11,6 +11,10 @@ The intent of the Integerate IIS application is to provide interoperability betw
 could benefit from the IIS data. Relevant applications may be CDC NEDSS Based Systems or a School System that wishes to retrieve immunization
 data for a student.
 
+The connectivity and interoperability between Integrate IIS and State IIS systems is done in the IISCore class library. The IIS Core class library is the
+primary dependency of the Integrate IIS application. The IIS Core application relies on the SMM Tester, which is a Java application written by
+the American Immunization Registry Assoication (AIRA). The source code for the IIS Core project can be found at https://github.com/immregistries/IISConnectCore.
+
 Getting Started
 ----------------------------------------------
 Pull the Integrate IIS source code from the following GitHub repository:
@@ -68,8 +72,12 @@ Prerequisites
 -- Maven
 Maven must be installed to build and deploy the IIS Connect application.
 
+-- IIS Core
+IIS Core is required to run Integrate IIS. Source code is available at https://github.com/immregistries/IISConnectCore. IIS Core is
+dependent on AIRA's SMM-Tester.
+
 -- SMM-Tester
-The Integrate IIS application requires the SMM-Tester application. If the SMM-Tester.jar is not available on your
+The IIS Core libary requires the SMM-Tester application jar file. If the SMM-Tester.jar is not available on your
 local PC, you must download the smm-tester source code found at https://github.com/nathanbunker/smm-tester. 
 
 Download the source code locally and attempt to build the application using:
@@ -78,8 +86,7 @@ Download the source code locally and attempt to build the application using:
 If you receive errors conerning tests that failed, attempt to build the SMM-Tester using:
 	mvn install -Dmaven.test.skip=true
 
-The following dependency in the Integrate IIS pom.xml should allow the SMM-Tester.jar file to work properly with the Integrate IIS 
-application:
+The following dependency in the IIS Core pom.xml should allow the SMM-Tester.jar file to work properly with the IIS Core code:
 
 		<dependency>
 			<groupId>org.immregistries</groupId>
