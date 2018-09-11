@@ -198,7 +198,7 @@
 					motherLastName: $("#MotherLastName").val(),
 					maidenName: $("#MaidenName").val(),
 					dob: dob,
-					sex: $("#Sex").val(),
+					//sex: $("#Sex").val(),
 					addressLine1: $("#AddressLine1").val(),
 					addressLine2: $("#AddressLine2").val(),
 					city: $("#City").val(),
@@ -255,8 +255,14 @@
 				        'Content-Type': 'application/json' 
 				  },
 				  success: function(data){
-					  patientData.patients = data.queryResponse.patientList;
-					  patientData.vaccinations = data.queryResponse.vaccinationList;
+					  if(data.queryResponse == null){
+						  patientData.patients = null;
+						  patientData.vaccinations = null;
+					  }
+					  else{
+						  patientData.patients = data.queryResponse.patientList;
+						  patientData.vaccinations = data.queryResponse.vaccinationList;
+					  }
 				  }
 				}).done(function(data){
 					_patientData = patientData;
@@ -269,10 +275,10 @@
 			var sb = new Array(); 
 			
 			
-			if(patientData.patients.length == 0){					
+			if(patientData.patients == null){					
 				sb.push("<div>No patient vaccinations found!</div>")
 			}
-			else if(patientData.patients.length > 1){
+			else if(patientData.patients != null && patientData.patients.length > 1){
 				
 				sb.push("<div>Multiple patients found.</div>")
 				sb.push("<div class=\"divTable\" style=\"border: 1px solid #000;\">");
@@ -307,55 +313,58 @@
 				
 			}
 			else{
-				sb.push("<div style=\"font-weight:bold;\">Immunization Records Found for " + $.trim(patientData.patients[0].nameFirst) + " " + $.trim(patientData.patients[0].nameLast) + " DOB: " + $.trim(patientData.patients[0].birthDate).split("T")[0] + " Maiden Name: "  + $.trim(patientData.patients[0].motherNameMaiden) + "</div>");
-				sb.push("<div class=\"divTable\" style=\"border: 1px solid #000;\">");
-				sb.push("<div class=\"divTableBody\">");
-				// Make header row.
-				sb.push("<div class=\"divTableRow\">");
-				sb.push("<div class=\"divTableHead\">Select Vaccination</div>");
-				sb.push("<div class=\"divTableHead\">Admin Date</div>");
-				sb.push("<div class=\"divTableHead\">Vacc Label</div>");
-				sb.push("<div class=\"divTableHead\">Vacc Cvx</div>");
-				sb.push("<div class=\"divTableHead\">Manu Label</div>");
-				sb.push("<div class=\"divTableHead\">Manu Cvx</div>");
-				sb.push("<div class=\"divTableHead\">Lot #</div>");
-				sb.push("<div class=\"divTableHead\">Comp Status</div>");
-				sb.push("<div class=\"divTableHead\">Info Src</div>");
-				sb.push("<div class=\"divTableHead\">Info Src Label</div>");
-				sb.push("<div class=\"divTableHead\">Refusal Reason</div>");
-				sb.push("<div class=\"divTableHead\">Admin Amt</div>");
-				sb.push("<div class=\"divTableHead\">Admin Amt Unit</div>");					
-				sb.push("</div>");
-				
-				
-				for(var i = 0; i < patientData.vaccinations.length; i++){
-					
-					
-					var vaccDate = patientData.vaccinations[i].administrationDate.split('T');
+				if(patientData.patentList != null && patientData.vaccinations != null){
+					sb.push("<div style=\"font-weight:bold;\">Immunization Records Found for " + $.trim(patientData.patients[0].nameFirst) + " " + $.trim(patientData.patients[0].nameLast) + " DOB: " + $.trim(patientData.patients[0].birthDate).split("T")[0] + " Maiden Name: "  + $.trim(patientData.patients[0].motherNameMaiden) + "</div>");
+					sb.push("<div class=\"divTable\" style=\"border: 1px solid #000;\">");
+					sb.push("<div class=\"divTableBody\">");
+					// Make header row.
 					sb.push("<div class=\"divTableRow\">");
-					sb.push("<div class=\"divTableCell\"><input type=\"checkbox\" name=\"vaccination\" value=\"" + $.trim(patientData.vaccinations[i].vaccineLabel) + "\"/></div>");
-					sb.push("<div class=\"divTableCell\">" + $.trim(vaccDate[0]) + "</div>");
-					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].vaccineLabel) + "</div>");
-					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].vaccineCvx) + "</div>");
-					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].manufacturerLabel) + "</div>");
-					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].manufacturerCvx) + "</div>");
-					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].lotNumber) + "</div>");
-					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].completionStatus) + "</div>");
-					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].informationSource) + "</div>");
-					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].informationSourceLabel) + "</div>");
-					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].refusalReason) + "</div>");
-					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].administeredAmount) + "</div>");
-					sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].administeredAmountUnit) + "</div>");								
+					sb.push("<div class=\"divTableHead\">Select Vaccination</div>");
+					sb.push("<div class=\"divTableHead\">Admin Date</div>");
+					sb.push("<div class=\"divTableHead\">Vacc Label</div>");
+					sb.push("<div class=\"divTableHead\">Vacc Cvx</div>");
+					sb.push("<div class=\"divTableHead\">Manu Label</div>");
+					sb.push("<div class=\"divTableHead\">Manu Cvx</div>");
+					sb.push("<div class=\"divTableHead\">Lot #</div>");
+					sb.push("<div class=\"divTableHead\">Comp Status</div>");
+					sb.push("<div class=\"divTableHead\">Info Src</div>");
+					sb.push("<div class=\"divTableHead\">Info Src Label</div>");
+					sb.push("<div class=\"divTableHead\">Refusal Reason</div>");
+					sb.push("<div class=\"divTableHead\">Admin Amt</div>");
+					sb.push("<div class=\"divTableHead\">Admin Amt Unit</div>");					
 					sb.push("</div>");
+					
+					
+					for(var i = 0; i < patientData.vaccinations.length; i++){
+						
+						
+						var vaccDate = patientData.vaccinations[i].administrationDate.split('T');
+						sb.push("<div class=\"divTableRow\">");
+						sb.push("<div class=\"divTableCell\"><input type=\"checkbox\" name=\"vaccination\" value=\"" + $.trim(patientData.vaccinations[i].vaccineLabel) + "\"/></div>");
+						sb.push("<div class=\"divTableCell\">" + $.trim(vaccDate[0]) + "</div>");
+						sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].vaccineLabel) + "</div>");
+						sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].vaccineCvx) + "</div>");
+						sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].manufacturerLabel) + "</div>");
+						sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].manufacturerCvx) + "</div>");
+						sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].lotNumber) + "</div>");
+						sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].completionStatus) + "</div>");
+						sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].informationSource) + "</div>");
+						sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].informationSourceLabel) + "</div>");
+						sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].refusalReason) + "</div>");
+						sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].administeredAmount) + "</div>");
+						sb.push("<div class=\"divTableCell\">" + $.trim(patientData.vaccinations[i].administeredAmountUnit) + "</div>");								
+						sb.push("</div>");
+					}
+					
+					// Button to submit vaccinations to RESTFul vaccination service.
+					// Checkbox to include vaccination with patient.
+					sb.push("</div>");
+					sb.push("</div>");						
+					sb.push("<button id=\"btnSaveVaccination\" class=\"btn btn-primary\">Save Vaccine Data</button>");
+					
+					
+					
 				}
-				
-				// Button to submit vaccinations to RESTFul vaccination service.
-				// Checkbox to include vaccination with patient.
-				sb.push("</div>");
-				sb.push("</div>");						
-				sb.push("<button id=\"btnSaveVaccination\" class=\"btn btn-primary\">Save Vaccine Data</button>");
-				
-				
 				
 			}
 							

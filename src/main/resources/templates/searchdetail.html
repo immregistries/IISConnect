@@ -305,10 +305,10 @@
 			$("#responseHL7").html(patientData.responseHL7);
 			$("#queryResponse").html(JSON.stringify(patientData.queryResponse));
 			
-			if(patientData.queryResponse.patientList.length == 0){					
+			if(patientData.queryResponse == null){					
 				sb.push("<div>No patient vaccinations found!</div>")
 			}
-			else if(patientData.queryResponse.patientList.length > 1){
+			else if(patientData.queryResponse.patientList != null & patientData.queryResponse.patientList.length > 1){
 				
 				sb.push("<div>Multiple patients found.</div>")
 				sb.push("<div class=\"divTable\" style=\"border: 1px solid #000;\">");
