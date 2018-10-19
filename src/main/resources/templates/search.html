@@ -313,7 +313,7 @@
 				
 			}
 			else{
-				if(patientData.patentList != null && patientData.vaccinations != null){
+				if(patientData.patients != null && patientData.vaccinations != null){
 					sb.push("<div style=\"font-weight:bold;\">Immunization Records Found for " + $.trim(patientData.patients[0].nameFirst) + " " + $.trim(patientData.patients[0].nameLast) + " DOB: " + $.trim(patientData.patients[0].birthDate).split("T")[0] + " Maiden Name: "  + $.trim(patientData.patients[0].motherNameMaiden) + "</div>");
 					sb.push("<div class=\"divTable\" style=\"border: 1px solid #000;\">");
 					sb.push("<div class=\"divTableBody\">");
